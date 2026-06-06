@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Barril Verde - Bebidas en Lanús</title>
+
+    <meta name="description" content="Barril Verde - Venta de bebidas alcohólicas en Lanús. Vinos, cervezas y bebidas para cada ocasión.">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div id="navbar-container"></div>
+
+<!-- HERO -->
+<header id="hero">
+
+    <img src="images/local.png" alt="Barril Verde">
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <h1 class="display-3 fw-bold">
+            Barril Verde
+        </h1>
+
+        <p class="lead">
+            Tu vinoteca de confianza en Lanús 🍷<br>
+            Vinos, cervezas y bebidas para cada ocasión.
+        </p>
+    </div>
+
+</header>
+
+<!-- MAPA -->
+<section class="container text-center my-5">
+
+    <h2>Ubicación</h2>
+
+    <p>
+        Cnel. D Elia 1632, Lanús, Buenos Aires
+    </p>
+
+    <iframe
+        src="https://maps.google.com/maps?q=Cnel.%20D%20Elia%201632,%20Lanus,%20Buenos%20Aires&t=&z=16&ie=UTF8&iwloc=&output=embed"
+        class="mapa"
+        loading="lazy">
+    </iframe>
+
+</section>
+
+<!-- NOVEDADES -->
+<section id="novedades" class="container my-5">
+
+    <h2 class="text-center mb-4">
+        Novedades
+    </h2>
+
+    <div class="card shadow border-0">
+
+        <div class="card-body text-center">
+
+            <h4>🍷 Nuevos ingresos todas las semanas</h4>
+
+            <p>
+                Encontrá vinos, espumantes, cervezas artesanales
+                y promociones especiales para cada ocasión.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- RESEÑAS -->
+<section class="container my-5">
+
+    <h2 class="text-center mb-4">
+        Opiniones de clientes
+    </h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card review-card text-center">
+                <div class="card-body">
+                    <p>
+                        “Excelente atención y variedad de vinos.
+                        Siempre encuentro algo nuevo.”
+                    </p>
+                    <h6>– Martín ⭐⭐⭐⭐⭐</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card review-card text-center">
+                <div class="card-body">
+                    <p>
+                        “Muy buenos precios y recomendaciones.
+                        Ideal para regalar.”
+                    </p>
+                    <h6>– Laura ⭐⭐⭐⭐⭐</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card review-card text-center">
+                <div class="card-body">
+                    <p>
+                        “Gran variedad de bebidas y excelente asesoramiento.”
+                    </p>
+                    <h6>– Diego ⭐⭐⭐⭐⭐</h6>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<div id="footer-container"></div>
+
+<script>
+fetch("components/navbar.html")
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("navbar-container").innerHTML = data;
+    });
+
+fetch("components/footer.html")
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("footer-container").innerHTML = data;
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

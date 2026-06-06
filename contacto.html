@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+```
+<title>Contacto - Barril Verde</title>
+
+<meta name="description"
+    content="Contactate con Barril Verde. Consultas sobre vinos, cervezas, promociones y disponibilidad de productos.">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+```
+
+</head>
+
+<body>
+
+```
+<!-- NAVBAR -->
+<div id="navbar-container"></div>
+
+<section class="container my-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-5 col-md-7">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-4">
+
+                    <h2 class="text-center mb-3">
+                        Contactanos
+                    </h2>
+
+                    <p class="text-center text-muted mb-4">
+                        Consultanos por productos,
+                        promociones y disponibilidad.
+                    </p>
+
+                    <form id="contactoForm"
+                        action="https://formsubmit.co/TU_MAIL"
+                        method="POST"
+                        novalidate>
+
+                        <input type="hidden" name="_captcha" value="false">
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">
+                                Nombre
+                            </label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="nombre"
+                                name="nombre"
+                                maxlength="50"
+                                required>
+
+                            <div class="form-text">
+                                Solo letras (máx. 50 caracteres)
+                            </div>
+
+                            <div class="invalid-feedback">
+                                Ingresá solo letras.
+                            </div>
+                        </div>
+
+                        <!-- Apellido -->
+                        <div class="mb-3">
+                            <label for="apellido" class="form-label">
+                                Apellido
+                            </label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="apellido"
+                                name="apellido"
+                                maxlength="50"
+                                required>
+
+                            <div class="form-text">
+                                Solo letras (máx. 50 caracteres)
+                            </div>
+
+                            <div class="invalid-feedback">
+                                Ingresá solo letras.
+                            </div>
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">
+                                Teléfono
+                            </label>
+
+                            <input type="tel"
+                                class="form-control"
+                                id="telefono"
+                                name="telefono"
+                                maxlength="15"
+                                required>
+
+                            <div class="form-text">
+                                Solo números (7 a 15 dígitos)
+                            </div>
+
+                            <div class="invalid-feedback">
+                                Ingresá un teléfono válido.
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                Email
+                            </label>
+
+                            <input type="email"
+                                class="form-control"
+                                id="email"
+                                name="email"
+                                maxlength="100"
+                                required>
+
+                            <div class="form-text">
+                                Ejemplo: nombre@email.com
+                            </div>
+
+                            <div class="invalid-feedback">
+                                Ingresá un email válido.
+                            </div>
+                        </div>
+
+                        <!-- Mensaje -->
+                        <div class="mb-3">
+                            <label for="mensaje" class="form-label">
+                                Consulta
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                id="mensaje"
+                                name="mensaje"
+                                rows="4"
+                                maxlength="500"
+                                required></textarea>
+
+                            <small id="mensajeContador"
+                                class="text-muted d-block text-end">
+                                0 / 500
+                            </small>
+
+                            <div class="form-text">
+                                Máximo 500 caracteres
+                            </div>
+
+                            <div class="invalid-feedback">
+                                Escribí tu consulta.
+                            </div>
+                        </div>
+
+                        <button
+                            id="btnEnviar"
+                            type="submit"
+                            class="btn btn-success w-100"
+                            disabled>
+
+                            Enviar Consulta
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<div id="footer-container"></div>
+
+<script>
+    fetch("components/navbar.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("navbar-container").innerHTML = data;
+        });
+
+    fetch("components/footer.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("footer-container").innerHTML = data;
+        });
+</script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const form = document.getElementById('contactoForm');
+        const inputs = form.querySelectorAll('input, textarea');
+        const mensaje = document.getElementById('mensaje');
+        const contador = document.getElementById('mensajeContador');
+        const btnEnviar = document.getElementById('btnEnviar');
+
+        const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
+        const soloNumeros = /^[0-9]+$/;
+
+        inputs.forEach(input => {
+
+            input.addEventListener('input', () => {
+                validarCampo(input);
+                validarFormulario();
+            });
+
+        });
+
+        mensaje.addEventListener('input', () => {
+
+            contador.textContent =
+                `${mensaje.value.length} / 500`;
+
+            contador.style.color =
+                mensaje.value.length > 450
+                    ? 'red'
+                    : '#6c757d';
+
+        });
+
+        function validarCampo(input) {
+
+            let valido = true;
+
+            if (
+                input.id === 'nombre' ||
+                input.id === 'apellido'
+            ) {
+
+                valido =
+                    soloLetras.test(input.value.trim());
+
+            }
+
+            else if (input.id === 'telefono') {
+
+                valido =
+                    soloNumeros.test(input.value.trim()) &&
+                    input.value.length >= 7 &&
+                    input.value.length <= 15;
+
+            }
+
+            else if (input.id === 'email') {
+
+                valido = input.checkValidity();
+
+            }
+
+            else if (input.id === 'mensaje') {
+
+                valido =
+                    input.value.trim().length > 0 &&
+                    input.value.trim().length <= 500;
+
+            }
+
+            input.classList.remove(
+                'is-valid',
+                'is-invalid'
+            );
+
+            if (input.value.trim() !== '') {
+
+                input.classList.add(
+                    valido ? 'is-valid' : 'is-invalid'
+                );
+
+            }
+
+            return valido;
+
+        }
+
+        function validarFormulario() {
+
+            const camposValidos =
+                Array.from(inputs)
+                    .every(input =>
+                        validarCampo(input)
+                    );
+
+            btnEnviar.disabled = !camposValidos;
+
+        }
+
+    });
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+```
+
+</body>
+
+</html>
