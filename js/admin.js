@@ -1,5 +1,25 @@
-// Variable global para controlar el Modal de Bootstrap
+// Variables globales para controlar los componentes de Bootstrap
 let modalEditarBS;
+let modalBorrarBS;
+let toastBS;
+
+// Variables temporales para guardar los datos del producto a eliminar
+let productoIdParaBorrar = null;
+let fotoUrlParaBorrar = null;
+
+// Función para mostrar notificaciones flotantes temporales
+function mostrarNotificacion(mensaje, tipo = "success") {
+    const toastElement = document.getElementById("notificacionToast");
+    const mensajeElement = document.getElementById("notificacionMensaje");
+
+    if (!toastBS) {
+        toastBS = new bootstrap.Toast(toastElement, { delay: 3000 });
+    }
+
+    toastElement.className = `toast align-items-center text-white border-0 shadow bg-${tipo === "success" ? "success" : "danger"}`;
+    mensajeElement.textContent = mensaje;
+    toastBS.show();
+}
 
 async function cargarProductos() {
     const { data, error } = await supabaseClient
@@ -9,15 +29,17 @@ async function cargarProductos() {
 
     if (error) {
         console.error("Error al cargar productos:", error);
+        mostrarNotificacion("Error al conectar con la base de datos", "error");
         return;
     }
 
-    // Inicializamos el objeto modal si todavía no se creó
     if (!modalEditarBS) {
         modalEditarBS = new bootstrap.Modal(document.getElementById('editarModal'));
     }
+    if (!modalBorrarBS) {
+        modalBorrarBS = new bootstrap.Modal(document.getElementById('confirmarBorrarModal'));
+    }
 
-    // Guardamos los datos de Supabase globalmente para recuperarlos al editar
     window.productosCargados = data;
 
     const contenedor = document.getElementById("listaProductos");
@@ -42,7 +64,7 @@ async function cargarProductos() {
                             <button class="btn btn-warning btn-sm w-50" onclick="abrirModalEditar(${index})">
                                 Editar
                             </button>
-                            <button class="btn btn-danger btn-sm w-50" onclick="eliminarProducto(${producto.id}, '${producto.foto_url}')">
+                            <button class="btn btn-danger btn-sm w-50" onclick="solicitarConfirmacionBorrar(${producto.id}, '${producto.foto_url}')">
                                 Borrar
                             </button>
                         </div>
@@ -54,10 +76,17 @@ async function cargarProductos() {
 }
 
 // ==========================================
-// ACCIÓN: DETECTAR ENVÍO DEL FORM PRINCIPAL (CREAR)
+// ACCIÓN: CREAR PRODUCTO
 // ==========================================
 document.getElementById("productoForm").addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const formulario = document.getElementById("productoForm");
+    const botonEnviar = formulario.querySelector('button[type="submit"]');
+
+    botonEnviar.disabled = true;
+    const textoOriginal = botonEnviar.innerHTML;
+    botonEnviar.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...`;
 
     const foto = document.getElementById("foto").files[0];
     const nombre = document.getElementById("nombre").value;
@@ -65,56 +94,68 @@ document.getElementById("productoForm").addEventListener("submit", async (e) => 
     const descripcion = document.getElementById("descripcion").value;
 
     if (!foto) {
-        alert("Seleccioná una foto");
-        return;
-    }
-
-    const nombreArchivo = Date.now() + "_" + foto.name;
-
-    const { error: errorUpload } = await supabaseClient.storage
-        .from("productos")
-        .upload(nombreArchivo, foto);
-
-    if (errorUpload) {
-        console.error("Error al subir imagen:", errorUpload);
-        alert("Error subiendo imagen");
-        return;
-    }
-
-    const { data: urlData } = supabaseClient.storage
-        .from("productos")
-        .getPublicUrl(nombreArchivo);
-
-    const foto_url = urlData.publicUrl;
-
-    const { error: errorInsert } = await supabaseClient
-        .from("productos")
-        .insert({ nombre, categoria, descripcion, foto_url });
-
-    if (errorInsert) {
-        console.error("Error al insertar producto:", errorInsert);
-        alert("Error guardando producto");
-        return;
-    }
-
-    alert("Producto guardado correctamente");
-    document.getElementById("productoForm").reset();
-    cargarProductos();
-});
-
-
-// ==========================================
-// ACCIÓN: ELIMINAR PRODUCTO (Y SU FOTO)
-// ==========================================
-async function eliminarProducto(id, fotoUrl) {
-    if (!confirm("¿Seguro que querés borrar este producto? Esta acción no tiene vuelta atrás.")) {
+        mostrarNotificacion("Seleccioná una foto obligatoriamente", "error");
+        botonEnviar.disabled = false;
+        botonEnviar.innerHTML = textoOriginal;
         return;
     }
 
     try {
-        // 1. Intentamos remover el archivo del Storage de forma segura
-        if (fotoUrl && fotoUrl.includes("/")) {
-            const nombreArchivo = fotoUrl.split("/").pop();
+        const nombreArchivo = Date.now() + "_" + foto.name;
+
+        const { error: errorUpload } = await supabaseClient.storage
+            .from("productos")
+            .upload(nombreArchivo, foto);
+
+        if (errorUpload) throw errorUpload;
+
+        const { data: urlData } = supabaseClient.storage
+            .from("productos")
+            .getPublicUrl(nombreArchivo);
+
+        const foto_url = urlData.publicUrl;
+
+        const { error: errorInsert } = await supabaseClient
+            .from("productos")
+            .insert({ nombre, categoria, descripcion, foto_url });
+
+        if (errorInsert) throw errorInsert;
+
+        mostrarNotificacion("Producto guardado correctamente", "success");
+        formulario.reset();
+        cargarProductos();
+
+    } catch (error) {
+        console.error("Error al guardar producto:", error);
+        mostrarNotificacion("Hubo un error al guardar el producto", "error");
+    } finally {
+        botonEnviar.disabled = false;
+        botonEnviar.innerHTML = textoOriginal;
+    }
+});
+
+// ==========================================
+// ACCIÓN: PREPARAR EL MODAL DE BORRADO
+// ==========================================
+function solicitarConfirmacionBorrar(id, fotoUrl) {
+    // Guardamos los datos temporalmente en las variables globales
+    productoIdParaBorrar = id;
+    fotoUrlParaBorrar = fotoUrl;
+    
+    // Abrimos el modal de confirmación con diseño limpio
+    modalBorrarBS.show();
+}
+
+// Evento que escucha el clic del botón "Eliminar" de adentro del modal lindo
+document.getElementById("btnConfirmarBorrar").addEventListener("click", async () => {
+    if (!productoIdParaBorrar) return;
+
+    // Cerramos el modal de confirmación de inmediato
+    modalBorrarBS.hide();
+
+    try {
+        if (fotoUrlParaBorrar && fotoUrlParaBorrar.includes("/")) {
+            const nombreArchivo = fotoUrlParaBorrar.split("/").pop();
             if (nombreArchivo) {
                 await supabaseClient.storage
                     .from("productos")
@@ -122,26 +163,27 @@ async function eliminarProducto(id, fotoUrl) {
             }
         }
     } catch (errStorage) {
-        // Si falla el borrado de la foto por alguna razón, registramos el error pero no frenamos el borrado del dato
-        console.warn("No se pudo borrar la foto del storage, procediendo con el registro de datos:", errStorage);
+        console.warn("No se pudo remover la imagen del storage:", errStorage);
     }
 
-    // 2. Borramos el registro en la base de datos
     const { error } = await supabaseClient
         .from("productos")
         .delete()
-        .eq("id", id);
+        .eq("id", productoIdParaBorrar);
+
+    // Limpiamos las variables temporales
+    productoIdParaBorrar = null;
+    fotoUrlParaBorrar = null;
 
     if (error) {
         console.error("Error de Supabase al borrar:", error);
-        alert("Error al borrar el producto en la base de datos");
+        mostrarNotificacion("Error al borrar el producto en la base de datos", "error");
         return;
     }
 
-    alert("Producto eliminado exitosamente");
+    mostrarNotificacion("Producto eliminado exitosamente", "success");
     cargarProductos();
-}
-
+});
 
 // ==========================================
 // ACCIÓN: EDITAR (ABRIR MODAL Y RELLENAR)
@@ -149,28 +191,22 @@ async function eliminarProducto(id, fotoUrl) {
 function abrirModalEditar(index) {
     const producto = window.productosCargados[index];
 
-    // Rellenamos el formulario del modal con los datos actuales
     document.getElementById("editId").value = producto.id;
     document.getElementById("editNombre").value = producto.nombre;
     document.getElementById("editCategoria").value = producto.categoria;
     document.getElementById("editDescripcion").value = producto.descripcion;
     document.getElementById("editFotoUrlActual").value = producto.foto_url;
-    
-    // Limpiamos el input de archivo por si había quedado algo seleccionado antes
     document.getElementById("editFoto").value = "";
 
-    // Mostramos el modal en pantalla
     modalEditarBS.show();
 }
 
-
 // ==========================================
-// ACCIÓN: ENVIAR ACTUALIZACIÓN DESDE EL MODAL (CORREGIDO)
+// ACCIÓN: ACTUALIZAR PRODUCTO
 // ==========================================
 document.getElementById("editarForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // SOLUCIÓN AL ERROR DE ACCESIBILIDAD: Quitamos el foco del botón inmediatamente
     if (document.activeElement) {
         document.activeElement.blur(); 
     }
@@ -183,9 +219,7 @@ document.getElementById("editarForm").addEventListener("submit", async (e) => {
     let foto_url = document.getElementById("editFotoUrlActual").value;
 
     try {
-        // Si el usuario decidió cambiar la imagen del ítem
         if (nuevaFoto) {
-            // Intentamos borrar la imagen vieja del bucket de forma segura
             if (foto_url && foto_url.includes("/")) {
                 const nombreArchivoViejo = foto_url.split("/").pop();
                 if (nombreArchivoViejo) {
@@ -193,7 +227,6 @@ document.getElementById("editarForm").addEventListener("submit", async (e) => {
                 }
             }
 
-            // Subimos la nueva foto
             const nombreArchivoNuevo = Date.now() + "_" + nuevaFoto.name;
             const { error: errorUpload } = await supabaseClient.storage
                 .from("productos")
@@ -201,7 +234,6 @@ document.getElementById("editarForm").addEventListener("submit", async (e) => {
 
             if (errorUpload) throw errorUpload;
 
-            // Conseguimos la nueva URL pública
             const { data: urlData } = supabaseClient.storage
                 .from("productos")
                 .getPublicUrl(nombreArchivoNuevo);
@@ -209,7 +241,6 @@ document.getElementById("editarForm").addEventListener("submit", async (e) => {
             foto_url = urlData.publicUrl;
         }
 
-        // Actualizamos las columnas correspondientes en Supabase
         const { error: errorUpdate } = await supabaseClient
             .from("productos")
             .update({ nombre, categoria, descripcion, foto_url })
@@ -217,21 +248,18 @@ document.getElementById("editarForm").addEventListener("submit", async (e) => {
 
         if (errorUpdate) throw errorUpdate;
 
-        // Primero ocultamos el modal de forma limpia
         modalEditarBS.hide();
         
-        // Esperamos 300ms a que la animación de cierre termine antes de mostrar el alert y recargar
         setTimeout(() => {
-            alert("Producto modificado con éxito");
+            mostrarNotificacion("Producto modificado con éxito", "success");
             cargarProductos();
         }, 300);
 
     } catch (error) {
         console.error("Error crítico durante la actualización:", error);
-        alert("Hubo un error al guardar los cambios en la base de datos.");
+        mostrarNotificacion("Hubo un error al guardar los cambios", "error");
     }
 });
-
 
 // EJECUCIÓN INICIAL
 cargarProductos();

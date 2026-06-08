@@ -133,7 +133,7 @@
                             <input type="text" id="editNombre" class="form-control" maxlength="100" required>
                         </div>
                         <div class="mb-3">
-                            <label_ for="editCategoria" class="form-label">Categoría</label_>
+                            <label for="editCategoria" class="form-label">Categoría</label>
                             <input type="text" id="editCategoria" class="form-control" maxlength="50" required>
                         </div>
                         <div class="mb-3">
@@ -152,24 +152,46 @@
         </div>
     </div>
 
+    <div class="modal fade" id="confirmarBorrarModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content text-center p-3 border-0 shadow">
+                <div class="modal-body">
+                    <div class="text-danger mb-3">
+                        <span class="fs-1">⚠️</span>
+                    </div>
+                    <h5 class="modal-title mb-2 fw-bold">¿Borrar producto?</h5>
+                    <p class="text-muted small">Esta acción eliminará el artículo de forma definitiva de la base de datos.</p>
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button type="button" class="btn btn-light btn-sm px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" id="btnConfirmarBorrar" class="btn btn-danger btn-sm px-4">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+        <div id="notificacionToast" class="toast align-items-center text-white border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="notificacionMensaje"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <div id="footer-container"></div>
 
     <script>
         fetch("components/navbar.html")
             .then(response => response.text())
-            .then(data => {
-                document.getElementById("navbar-container").innerHTML = data;
-            });
+            .then(data => { document.getElementById("navbar-container").innerHTML = data; });
 
         fetch("components/footer.html")
             .then(response => response.text())
-            .then(data => {
-                document.getElementById("footer-container").innerHTML = data;
-            });
+            .then(data => { document.getElementById("footer-container").innerHTML = data; });
     </script>
 
     <script src="js/admin.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
