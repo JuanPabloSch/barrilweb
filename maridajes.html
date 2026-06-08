@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<title>Maridajes - Barril Verde</title>
+
+<meta name="description"
+    content="Descubrí qué bebida combina mejor con cada comida. Guía de maridajes de Barril Verde.">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+
+</head>
+
+<body>
+
+
+<!-- NAVBAR -->
+<div id="navbar-container"></div>
+
+<!-- ENCABEZADO -->
+<section class="container text-center my-5">
+
+    <h1 class="display-5 fw-bold">
+        🍷 Guía de Maridajes
+    </h1>
+
+    <p class="lead">
+        Encontrá la combinación ideal para cada ocasión.
+    </p>
+
+</section>
+
+<!-- CARDS -->
+<section class="container mb-5">
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🍷 Malbec</h4>
+                    <p>Asado, carnes rojas y empanadas de carne.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🧀​ Cabernet Sauvignon</h4>
+                    <p>Carnes grilladas y quesos duros.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🍇 Pinot Noir</h4>
+                    <p>Pastas con salsa suave y pollo.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🐟 Chardonnay</h4>
+                    <p>Pescados, mariscos y pollo.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🥗 Sauvignon Blanc</h4>
+                    <p>Ensaladas, ceviche y sushi.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🍾 Espumantes</h4>
+                    <p>Picadas, sushi y postres.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🍕​ Fernet</h4>
+                    <p>Picadas, pizza y juntadas.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🍸 Gin Tonic</h4>
+                    <p>Tablas de quesos y frutos secos.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card drink-card h-100 text-center">
+                <div class="card-body">
+                    <h4>🥃 Whisky</h4>
+                    <p>Chocolate amargo y nueces.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<div id="footer-container"></div>
+
+<script>
+    fetch("components/navbar.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("navbar-container").innerHTML = data;
+        });
+
+    fetch("components/footer.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("footer-container").innerHTML = data;
+        });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>
