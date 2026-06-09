@@ -46,9 +46,9 @@ async function cargarNovedadesPublicas() {
                             
                             <div class="mt-3">
                                 <a href="${urlWhatsapp}" 
-                                   target="_blank" 
-                                   class="btn btn-success w-100 py-2fw-bold">
-                                    Consultar
+                                target="_blank" 
+                                class="btn btn-success w-100 py-2fw-bold">
+                                Consultar
                                 </a>
                             </div>
                         </div>

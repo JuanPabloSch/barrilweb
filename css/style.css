@@ -1,15 +1,58 @@
-body{
+body {
     font-family: Arial, sans-serif;
+    background-color: #f8f5eb; /* Un beige clarito muy fino */
+    color: #2b2b2b; /* Texto un toque más suave que el negro puro */
 }
 
 /* NAVBAR */
 
-.navbar{
-    background-color: #1f3d2b !important;
+/* NAVBAR RECOPA */
+.navbar {
+    background-color: #1f3d2b !important; /* El verde hermoso de tu marca */
+    padding: 12px 0;                       /* Un toque más de altura para que respire */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Sombra suave abajo para dar profundidad */
+    border-bottom: 2px solid #cbd4c3;     /* Una línea sutil abajo que combina con el beige */
 }
 
-.navbar-brand{
-    font-weight: bold;
+/* El nombre del boliche */
+.navbar-brand {
+    font-weight: 800 !important;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase; /* Queda mucho más imponente en mayúsculas */
+    color: #ffffff !important;
+    transition: 0.3s ease;
+}
+
+/* Efecto al pasar el mouse por el logo/nombre */
+.navbar-brand:hover {
+    color: #cbd4c3 !important; /* Cambia a un tono crema suave */
+}
+
+/* LOS BOTONES DEL MENÚ (Home, Novedades, etc) */
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.75) !important; /* Blanco suavizado por defecto */
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 16px !important;
+    margin: 0 4px;
+    border-radius: 8px; /* Bordes redondeados para el efecto flotante */
+    transition: all 0.3s ease;
+}
+
+/* EL EFECTO INTERACTIVO (HOVER) */
+.navbar-nav .nav-link:hover {
+    color: #ffffff !important;            /* Texto blanco brillante */
+    background-color: rgba(255, 255, 255, 0.1); /* Sutil fondo iluminado al pasar el mouse */
+}
+
+/* Modificar el botón de menú en celulares */
+.navbar-toggler {
+    border: none !important; /* Chau cuadradito feo alrededor de las tres rayitas */
+}
+
+.navbar-toggler:focus {
+    box-shadow: none !important; /* Chau reflejo azul molesto al tocar en celular */
 }
 
 /* LOGOS */
@@ -86,6 +129,7 @@ h2{
     border-radius: 15px;
     box-shadow: 0 2px 10px rgba(0,0,0,.1);
     transition: .3s;
+    background-color: #d3e9c4; /* Un beige clarito muy fino */
 }
 
 .review-card:hover{
@@ -93,19 +137,28 @@ h2{
 }
 
 /* FOOTER */
-
-footer{
+footer {
     background: #212529;
     color: white;
     padding: 30px 0;
+    width: 100% !important;   /* Forzamos a que ocupe todo el ancho de la pantalla */
+    display: block !important; /* Evitamos problemas con el fetch */
 }
 
-footer a{
+footer a {
     color: white;
+    text-decoration: none; /* Le saca la línea fea de subrayado a los links */
 }
 
-footer a:hover{
+footer a:hover {
     opacity: .8;
+}
+#footer-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* RESPONSIVE */
@@ -161,4 +214,43 @@ footer a:hover{
 
 .drink-card:hover{
     transform:translateY(-5px);
+}
+/* ARREGLAR CAJA MUNDIALISTA */
+#anuncio-mundial {
+    background-color: #d3e9c4 !important; /* Forzamos el verde de tu marca */
+    color: rgb(6, 5, 5) !important;              /* Letras blancas */
+    border: none !important;              /* Eliminamos el borde blanco extra */
+    padding: 30px 20px !important;        /* Le damos un buen espacio adentro */
+}
+
+/* Forzar que los textos de adentro se vean blancos y perfectos */
+#anuncio-mundial h4 {
+    color: rgb(8, 8, 8) !important;
+    margin-bottom: 12px !important;
+}
+
+#anuncio-mundial p {
+    color: #000000 !important;
+    margin-bottom: 0 !important;
+}
+
+/* LOGO GRANDE CENTRADO */
+.logo-destacado-container {
+    padding: 20px;
+    display: inline-block;
+    background: radial-gradient(circle, rgba(31, 61, 43, 0.05) 0%, rgba(0,0,0,0) 70%); /* Un destello verde muy sutil de fondo */
+}
+
+.logo-grande {
+    max-width: 220px; /* Tamaño ideal para que destaque sin ser gigante */
+    height: auto;
+    border-radius: 50%; /* Por si tu logo es redondo como el de la navbar */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); /* Sombra suave para darle volumen */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Efecto interactivo tranqui cuando pasan el mouse */
+.logo-grande:hover {
+    transform: scale(1.05); /* Se agranda un pelín */
+    box-shadow: 0 12px 30px rgba(31, 61, 43, 0.15); /* La sombra se vuelve un toque más verde */
 }

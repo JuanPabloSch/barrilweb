@@ -7,6 +7,28 @@ let toastBS;
 let productoIdParaBorrar = null;
 let fotoUrlParaBorrar = null;
 
+// ==========================================
+// CONTROL DE ACCESO: SOLO DUEÑO AUTENTICADO
+// ==========================================
+async function verificarSesion() {
+    // Pedimos a Supabase los datos del usuario actual en memoria
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    // Si no hay ningún usuario logueado, lo redireccionamos al login inmediatamente
+    if (!user) {
+        window.location.href = "login.html";
+    }
+}
+// Ejecutamos el filtro de seguridad de inmediato antes de pintar la pantalla
+verificarSesion();
+
+
+// Agregar botón de Cerrar Sesión en algún lado si querés (Opcional)
+async function cerrarSesion() {
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+}
+
 // Función para mostrar notificaciones flotantes temporales
 function mostrarNotificacion(mensaje, tipo = "success") {
     const toastElement = document.getElementById("notificacionToast");
@@ -260,6 +282,18 @@ document.getElementById("editarForm").addEventListener("submit", async (e) => {
         mostrarNotificacion("Hubo un error al guardar los cambios", "error");
     }
 });
+
+// ==========================================
+// ACCIÓN: CERRAR SESIÓN SEGUIDO
+// ==========================================
+async function cerrarSesion() {
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) {
+        mostrarNotificacion("Error al cerrar sesión", "error");
+    } else {
+        window.location.href = "login.html";
+    }
+}
 
 // EJECUCIÓN INICIAL
 cargarProductos();
